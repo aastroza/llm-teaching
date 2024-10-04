@@ -1,2 +1,2 @@
 # llm-teaching
-Teaching material about Large Language Models (LLMs)
+Teaching materials on Large Language Models (LLMs)
