@@ -7,12 +7,6 @@ from rich.console import Console
 from rich.markdown import Markdown
 from rich.panel import Panel
 
-class Message:
-    def __init__(self, role, content=None, function_call=None):
-        self.role = role
-        self.content = content
-        self.function_call = function_call
-
 def create_panel(content: Any, title: str, color: str):
     return Panel(
         content,
@@ -26,7 +20,7 @@ def create_panel(content: Any, title: str, color: str):
         padding=(1, 2),
     )
 
-def format_message(message: Message) -> Panel:
+def format_message(message: dict) -> Panel:
     role_colors = {
         "system": "red",
         "user": "green",
@@ -35,20 +29,18 @@ def format_message(message: Message) -> Panel:
     }
     content = []
 
-    for item in message.content:
-        if item.type == "text":
-            content.append(item.text.value)
+    content.append(message['content'])
 
     # Create the panel for the message
     panel = create_panel(
         Markdown("\n\n".join(content)),
-        title=message.role.capitalize(),
-        color=role_colors.get(message.role, "red"),
+        title=message['role'].capitalize(),
+        color=role_colors.get(message['role'], "red"),
     )
     return panel
 
 
-def pprint_message(message: Message):
+def pprint_message(message: dict):
     """
     Pretty-prints a single message using the rich library, highlighting the
     speaker's role, the message text, any available images, and the message
@@ -62,7 +54,7 @@ def pprint_message(message: Message):
     console.print(panel)
 
 
-def pprint_messages(messages: list[Message]):
+def pprint_messages(messages: list):
     """
     Iterates over a list of messages and pretty-prints each one.
 
@@ -74,5 +66,5 @@ def pprint_messages(messages: list[Message]):
         messages (list[Message]): A list of Message objects to be
             printed.
     """
-    for message in sorted(messages, key=lambda m: m.created_at):
+    for message in messages:
         pprint_message(message)
